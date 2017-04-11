@@ -1,0 +1,4 @@
+@model BikeDistributor.OrderViewModel
+
+<html><body><h1>Order Receipt for @Model.Company</h1><ul>@foreach (var line in Model.Lines) {
+<li>@line.Quantity x @line.Brand @line.BikeModel = @line.Amount.ToString("C")</li>}</ul><h3>Sub-Total: @Model.PreTaxAmount.ToString("C")</h3><h3>Tax: @Model.Tax.ToString("C")</h3><h2>Total: @Model.TotalAmount.ToString("C")</h2></body></html>

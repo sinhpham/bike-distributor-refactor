@@ -1,20 +1,19 @@
-﻿namespace BikeDistributor
+﻿using System;
+
+namespace BikeDistributor
 {
     public class Bike
     {
-        public const int OneThousand = 1000;
-        public const int TwoThousand = 2000;
-        public const int FiveThousand = 5000;
-    
         public Bike(string brand, string model, int price)
         {
-            Brand = brand;
-            Model = model;
-            Price = price;
+            Brand = !string.IsNullOrEmpty(brand) ? brand : throw new ArgumentOutOfRangeException(nameof(brand));
+            Model = !string.IsNullOrEmpty(model) ? model : throw new ArgumentOutOfRangeException(nameof(model));
+            // Should save price as priceInCents, and careful with using int/doulbe for currency amount.
+            Price = price > 0 ? price : throw new ArgumentOutOfRangeException(nameof(price));
         }
 
         public string Brand { get; private set; }
         public string Model { get; private set; }
-        public int Price { get; set; }
+        public int Price { get; private set; }
     }
 }

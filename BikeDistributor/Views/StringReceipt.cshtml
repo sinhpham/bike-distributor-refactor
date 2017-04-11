@@ -1,0 +1,10 @@
+@model BikeDistributor.OrderViewModel
+
+Order Receipt for @Model.Company
+@foreach (var line in Model.Lines) {
+	<text>	</text>@line.Quantity<text> x </text>@line.Brand<text> </text>@line.BikeModel<text> = </text>@line.Amount.ToString("C")
+}
+
+Sub-Total: @Model.PreTaxAmount.ToString("C")
+Tax: @Model.Tax.ToString("C")
+Total: @Model.TotalAmount.ToString("C")

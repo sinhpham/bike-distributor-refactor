@@ -1,13 +1,14 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace BikeDistributor.Test
 {
     [TestClass]
     public class OrderTest
     {
-        private readonly static Bike Defy = new Bike("Giant", "Defy 1", Bike.OneThousand);
-        private readonly static Bike Elite = new Bike("Specialized", "Venge Elite", Bike.TwoThousand);
-        private readonly static Bike DuraAce = new Bike("Specialized", "S-Works Venge Dura-Ace", Bike.FiveThousand);
+        private readonly static Bike Defy = new Bike("Giant", "Defy 1", 1000);
+        private readonly static Bike Elite = new Bike("Specialized", "Venge Elite", 2000);
+        private readonly static Bike DuraAce = new Bike("Specialized", "S-Works Venge Dura-Ace", 5000);
 
         [TestMethod]
         public void ReceiptOneDefy()
@@ -79,7 +80,35 @@ Total: $5,362.50";
             Assert.AreEqual(HtmlResultStatementOneDuraAce, order.HtmlReceipt());
         }
 
-        private const string HtmlResultStatementOneDuraAce = @"<html><body><h1>Order Receipt for Anywhere Bike Shop</h1><ul><li>1 x Specialized S-Works Venge Dura-Ace = $5,000.00</li></ul><h3>Sub-Total: $5,000.00</h3><h3>Tax: $362.50</h3><h2>Total: $5,362.50</h2></body></html>";    
+        private const string HtmlResultStatementOneDuraAce = @"<html><body><h1>Order Receipt for Anywhere Bike Shop</h1><ul><li>1 x Specialized S-Works Venge Dura-Ace = $5,000.00</li></ul><h3>Sub-Total: $5,000.00</h3><h3>Tax: $362.50</h3><h2>Total: $5,362.50</h2></body></html>";
+
+        [TestMethod]
+        public void TestOrderVM()
+        {
+            var order = new Order("Anywhere Bike Shop");
+            order.AddLine(new Line(DuraAce, 1));
+
+            var vm = order.PrepareViewModel();
+            Assert.AreEqual(vm.PreTaxAmount, 5000, 0.01);
+
+            Assert.AreEqual(vm.Tax, 362.5, 0.01);
+            Assert.AreEqual(vm.TotalAmount, 5362.5, 0.01);
+        }
+
+        [TestMethod]
+        public void TestLine()
+        {
+            var line = new Line(DuraAce, 2);
+            var price = line.CalcPrice(null);
+            Assert.AreEqual(price, DuraAce.Price * 2, 0.01);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void TestConstructors()
+        {
+            var order = new Order("");
+        }
     }
 }
 
